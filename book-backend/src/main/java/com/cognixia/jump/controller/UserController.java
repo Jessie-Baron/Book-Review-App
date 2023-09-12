@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cognixia.jump.exception.ResourceNotFoundException;
+import com.cognixia.jump.exception.UserExistsException;
 import com.cognixia.jump.model.User;
 import com.cognixia.jump.repository.UserRepository;
 
@@ -60,5 +61,17 @@ public class UserController {
         }
 
         return ResponseEntity.status(200).body(validUser.get());
+    }
+
+    @PostMapping("/user")
+    public ResponseEntity<User> createUser(@RequestBody User user) throws Exception {
+
+        Optional<User> existingUser = userRepo.findByUsername(user.getUsername());
+
+        if (existingUser.isPresent()) {
+            throw new UserExistsException("User");
+        }
+
+        return ResponseEntity.status(201).body(existingUser.get());
     }
 }
