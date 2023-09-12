@@ -33,12 +33,12 @@ public class BooksController {
 	}
     
     @GetMapping("/book/{id}")
-	public ResponseEntity<?> getBook(@PathVariable int id) {
+	public ResponseEntity<?> getBook(@PathVariable int id) throws ResourceNotFoundException{
 		
 		Optional<Book> found = repo.findById(id);
 		
 		if(found.isEmpty()) {
-			return ResponseEntity.status(400).body("book does not exist");
+			throw new ResourceNotFoundException("Book not found");
 		}
 		
 		return ResponseEntity.status(200).body(found.get());
@@ -54,9 +54,6 @@ public class BooksController {
 	public ResponseEntity<?> createBook(@RequestBody Book book) {
 		
 		book.setId(null);
-		
-		// make sure each student created has an address, if not checked, will end up with 500 error
-		// make sure no id is passed for address and it is auto incremented
 		
 		Book created = repo.save(book);
 		
@@ -78,6 +75,6 @@ public class BooksController {
 			return ResponseEntity.status(200).body(deleted);
 		}
 		
-		throw new ResourceNotFoundException("Book", id);
+		throw new ResourceNotFoundException("Book not found. Unable to delete");
 	}
 }
