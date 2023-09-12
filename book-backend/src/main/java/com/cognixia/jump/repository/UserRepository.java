@@ -11,6 +11,9 @@ import com.cognixia.jump.model.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
     
-    @Query(nativeQuery = true, value = "SELECT * FROM user WHERE username = ?1 AND password = 2?")
+    @Query(nativeQuery = true, value = "SELECT * FROM user WHERE username = 1? AND password = 2?")
     public Optional<User> getByCredentials(String username, String password);
+
+    @Query(nativeQuery = true, value = "SELECT * FROM user WHERE username = 1?")
+    public Optional<User> findByUsername(String username);
 }
