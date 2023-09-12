@@ -1,24 +1,29 @@
 package com.cognixia.jump.model;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import java.util.Objects;
 
+@Entity
 public class UserBook {
     
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private Integer userId;
+    private User userId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "book_id", referencedColumnName = "id")
-    private Integer bookId;
+    private User bookId;
 
     @Column
     private Integer rating;
@@ -27,7 +32,7 @@ public class UserBook {
     public UserBook() {
     }
 
-    public UserBook(Integer id, Integer userId, Integer bookId, Integer rating) {
+    public UserBook(Integer id, User userId, User bookId, Integer rating) {
         this.id = id;
         this.userId = userId;
         this.bookId = bookId;
@@ -42,19 +47,19 @@ public class UserBook {
         this.id = id;
     }
 
-    public Integer getUserId() {
+    public User getUserId() {
         return this.userId;
     }
 
-    public void setUserId(Integer userId) {
+    public void setUserId(User userId) {
         this.userId = userId;
     }
 
-    public Integer getBookId() {
+    public User getBookId() {
         return this.bookId;
     }
 
-    public void setBookId(Integer bookId) {
+    public void setBookId(User bookId) {
         this.bookId = bookId;
     }
 
@@ -71,12 +76,12 @@ public class UserBook {
         return this;
     }
 
-    public UserBook userId(Integer userId) {
+    public UserBook userId(User userId) {
         setUserId(userId);
         return this;
     }
 
-    public UserBook bookId(Integer bookId) {
+    public UserBook bookId(User bookId) {
         setBookId(bookId);
         return this;
     }
@@ -111,5 +116,6 @@ public class UserBook {
             ", rating='" + getRating() + "'" +
             "}";
     }
+
 
 }
