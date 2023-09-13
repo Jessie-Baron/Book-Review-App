@@ -51,4 +51,69 @@ public class BookControllerTest {
         List<Book> books = bookController.getBooks();
         assertEquals(books, bookList);
     }
+
+    @Test
+    public void testGetBookById() throws Exception {
+        int id = 1;
+        Book foundBook = new Book(id, "Little Bow Peep", "Little Suzie", "Horror");
+
+        when(bookRepo.findById(id)).thenReturn(Optional.of(foundBook));
+
+        ResponseEntity<Book> result = bookController.getBook(id);
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+        assertEquals(foundBook, result.getBody());
+    }
+
+    @Test
+    public void testGetBookByIdNotFound() throws Exception {
+        BooksController ucMock = mock(BooksController.class);
+        int id = 1;
+
+        when(bookRepo.findById(id)).thenReturn(Optional.empty());
+        when(ucMock.getBook(id)).thenThrow(ResourceNotFoundException.class);
+
+        assertThrows(ResourceNotFoundException.class, () -> ucMock.getBook(id));
+    }
+
+    @Test
+    public void testGetBookByGenre() throws Exception {
+        String genre = "Horror";
+        Book foundbook = new Book(1, "Little Bow Peep", "Little Suzie", "Horror");
+
+         List<Book> bookList = new ArrayList<>();
+         bookList.add(foundbook);
+
+        
+        when(bookRepo.sameGenre(genre)).thenReturn(bookList);
+
+        List<Book> result = bookController.bookInSameGenre(genre);
+        assertEquals(bookList, result);
+    }
+
+
+    @Test
+    public void testCreateBook() throws Exception {
+        Book createdBook = new Book(1, "Little Bow Peep", "Little Suzie", "Horror"); 
+
+        when(bookRepo.save(createdBook)).thenReturn(createdBook);
+
+        ResponseEntity<?> result = bookController.createBook(createdBook);
+        assertEquals(HttpStatus.CREATED, result.getStatusCode());
+        assertEquals(result.getBody(), createdBook);
+
+    }
+
+    @Test
+    public void testDeleteBook() throws Exception {
+        Book deletedBook = new Book(1, "Little Bow Peep", "Little Suzie", "Horror");
+    
+
+        when(bookRepo.findById(deletedBook.getId())).thenReturn(Optional.of(deletedBook));
+
+        ResponseEntity<?> result = bookController.deleteBook(1);
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+        assertEquals(result.getBody(), deletedBook);
+    }
+
 }
+

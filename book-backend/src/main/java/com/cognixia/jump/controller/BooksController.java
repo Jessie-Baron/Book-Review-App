@@ -33,7 +33,7 @@ public class BooksController {
 	}
     
     @GetMapping("/book/{id}")
-	public ResponseEntity<?> getBook(@PathVariable int id) throws ResourceNotFoundException{
+	public ResponseEntity<Book> getBook(@PathVariable int id) throws ResourceNotFoundException{
 		
 		Optional<Book> found = repo.findById(id);
 		
