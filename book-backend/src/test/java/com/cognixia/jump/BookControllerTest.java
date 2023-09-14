@@ -3,6 +3,7 @@ package com.cognixia.jump;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -105,12 +106,12 @@ public class BookControllerTest {
 
     @Test
     public void testDeleteBook() throws Exception {
-        Book deletedBook = new Book(1, "Little Bow Peep", "Little Suzie", "Horror");
-    
-
-        when(bookRepo.findById(deletedBook.getId())).thenReturn(Optional.of(deletedBook));
-
-        ResponseEntity<?> result = bookController.deleteBook(1);
+        int id = 1;
+        Book deletedBook = new Book(id, "Little Bow Peep", "Little Suzie", "Horror");
+        when(bookRepo.existsById(id)).thenReturn(true);
+        when(bookRepo.findById(id)).thenReturn(Optional.of(deletedBook));
+        //when(bookRepo.deleteById(id)).thenReturn(Optional.of(deletedBook));
+        ResponseEntity<?> result = bookController.deleteBook(id);
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertEquals(result.getBody(), deletedBook);
     }
