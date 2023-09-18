@@ -33,6 +33,10 @@ public class User {
     public User() {
     }
 
+    public User(Integer id) {
+        this.id = id;
+    }
+
     public User(int id, String username, String password, Role role) {
         this.id = id;
         this.username = username;

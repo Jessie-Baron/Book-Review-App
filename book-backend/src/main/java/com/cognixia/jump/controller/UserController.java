@@ -16,9 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cognixia.jump.exception.ResourceNotFoundException;
 import com.cognixia.jump.exception.UserExistsException;
+import com.cognixia.jump.model.Book;
 import com.cognixia.jump.model.User;
 import com.cognixia.jump.model.User.Role;
 import com.cognixia.jump.model.UserBook;
+import com.cognixia.jump.model.UserBookRequestBody;
+import com.cognixia.jump.repository.BookRepository;
 import com.cognixia.jump.repository.UserBookRepository;
 import com.cognixia.jump.repository.UserRepository;
 
@@ -31,6 +34,9 @@ public class UserController {
 
     @Autowired
     UserBookRepository userBookRepo;
+
+    @Autowired
+    BookRepository bookRepo;
 
     /********************
 	 GET OPERATIONS
@@ -88,10 +94,30 @@ public class UserController {
         return ResponseEntity.status(201).body(createdUser);
     }
 
-    // @PostMapping("/user/{id}")
-    // public ResponseEntity<User> addBookToUserList(@PathVariable int id, @RequestBody UserBook userBook) throws Exception {
+    // You only need to inlcude the book title, status, and rating in the request body and the method will create the actual UserBook object with the correct book id before adding it to the database
+    @PostMapping("/user/{userId}")
+    public ResponseEntity<UserBook> addBookToUserList(@PathVariable int userId, @RequestBody UserBookRequestBody userBookRB) throws Exception {
 
-    // }
+        Optional<UserBook> existingUserBook = userBookRepo.findByUserIdAndBookTitle(userId, userBookRB.getTitle());
+
+        if (existingUserBook.isPresent()) {
+            throw new UserExistsException("UserBook");
+        }
+
+        Optional<Book> foundBook = bookRepo.findByTitle(userBookRB.getTitle());
+
+        UserBook newUserBook = new UserBook(
+            -1,
+            new User(userId),
+            new Book(foundBook.get().getId()),
+            userBookRB.getStatus(),
+            userBookRB.getRating()
+        );
+
+        UserBook createdUserBook = userBookRepo.save(newUserBook);
+
+        return ResponseEntity.status(201).body(createdUserBook);
+    }
 
     
 
@@ -120,8 +146,10 @@ public class UserController {
         return ResponseEntity.status(200).body(updatedUser);
     }
 
+
+    // UserBookRequestBody has 3 variables. Book title, status, and rating. Because this method is just to update the UserBook entry, either status or rating can be left blank in the request body if you don't plan on changing the values for both of those variables
     @PatchMapping("/user/{userId}/{bookId}")
-    public ResponseEntity<UserBook> updateUserBookEntry(@PathVariable int userId, @PathVariable int bookId, @RequestBody UserBook userBook) throws Exception {
+    public ResponseEntity<UserBook> updateUserBookEntry(@PathVariable int userId, @PathVariable int bookId, @RequestBody UserBookRequestBody userBookRB) throws Exception {
 
         Optional<User> foundUser = userRepo.findById(userId);
 
@@ -129,18 +157,18 @@ public class UserController {
             throw new ResourceNotFoundException("User");
         }
 
-        Optional<UserBook> foundEntry = userBookRepo.findByUserAndBookId(userId, bookId);
+        Optional<UserBook> foundEntry = userBookRepo.findByUserIdAndBookTitle(userId, userBookRB.getTitle());
 
         if (foundEntry.isEmpty()) {
-            throw new ResourceNotFoundException("UserBook");
+            throw new ResourceNotFoundException("Book title");
         }
 
         UserBook existingUserBook = foundEntry.get();
 
-        if (userBook.getRating() != null)
-            existingUserBook.setRating(userBook.getRating());
-        if (userBook.getStatus() != null)
-            existingUserBook.setStatus(userBook.getStatus());
+        if (userBookRB.getRating() != null)
+            existingUserBook.setRating(userBookRB.getRating());
+        if (userBookRB.getStatus() != null)
+            existingUserBook.setStatus(userBookRB.getStatus());
 
         UserBook updated = userBookRepo.save(existingUserBook);
 
@@ -165,13 +193,14 @@ public class UserController {
         return ResponseEntity.status(200).body(foundUser.get());
     }
 
-    @DeleteMapping("/user/{userId}/{bookId}")
-    public ResponseEntity<UserBook> removeUserBookEntry(@PathVariable int userId, @PathVariable int bookId) throws Exception {
+    // The only thing you need to include in the request body is the title of the book
+    @DeleteMapping("/user/{userId}")
+    public ResponseEntity<UserBook> removeUserBookEntry(@PathVariable int userId, @PathVariable UserBookRequestBody userBookRB) throws Exception {
 
-        Optional<UserBook> foundUserBook = userBookRepo.findByUserAndBookId(userId, bookId);
+        Optional<UserBook> foundUserBook = userBookRepo.findByUserIdAndBookTitle(userId, userBookRB.getTitle());
 
         if (foundUserBook.isEmpty()) {
-            throw new ResourceNotFoundException("UserBook");
+            throw new ResourceNotFoundException("Book title");
         }
 
         userBookRepo.delete(foundUserBook.get());
