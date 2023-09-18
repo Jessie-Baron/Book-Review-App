@@ -1,17 +1,27 @@
 package com.cognixia.jump.model;
 
+import java.io.Serializable;
+import java.util.Objects;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import java.util.Objects;
 
 @Entity
-public class UserBook {
+public class UserBook implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    public static enum Status {
+        PLAN_TO_READ, CURRENTLY_READING, COMPLETED
+    }
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +33,10 @@ public class UserBook {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "book_id", referencedColumnName = "id")
-    private User bookId;
+    private Book bookId;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @Column
     private Integer rating;
@@ -32,10 +45,11 @@ public class UserBook {
     public UserBook() {
     }
 
-    public UserBook(Integer id, User userId, User bookId, Integer rating) {
+    public UserBook(Integer id, User userId, Book bookId, Status status, Integer rating) {
         this.id = id;
         this.userId = userId;
         this.bookId = bookId;
+        this.status = status;
         this.rating = rating;
     }
 
@@ -55,12 +69,20 @@ public class UserBook {
         this.userId = userId;
     }
 
-    public User getBookId() {
+    public Book getBookId() {
         return this.bookId;
     }
 
-    public void setBookId(User bookId) {
+    public void setBookId(Book bookId) {
         this.bookId = bookId;
+    }
+
+    public Status getStatus() {
+        return this.status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
     public Integer getRating() {
@@ -81,8 +103,13 @@ public class UserBook {
         return this;
     }
 
-    public UserBook bookId(User bookId) {
+    public UserBook bookId(Book bookId) {
         setBookId(bookId);
+        return this;
+    }
+
+    public UserBook status(Status status) {
+        setStatus(status);
         return this;
     }
 
@@ -99,12 +126,12 @@ public class UserBook {
             return false;
         }
         UserBook userBook = (UserBook) o;
-        return Objects.equals(id, userBook.id) && Objects.equals(userId, userBook.userId) && Objects.equals(bookId, userBook.bookId) && Objects.equals(rating, userBook.rating);
+        return Objects.equals(id, userBook.id) && Objects.equals(userId, userBook.userId) && Objects.equals(bookId, userBook.bookId) && Objects.equals(status, userBook.status) && Objects.equals(rating, userBook.rating);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, userId, bookId, rating);
+        return Objects.hash(id, userId, bookId, status, rating);
     }
 
     @Override
@@ -113,9 +140,9 @@ public class UserBook {
             " id='" + getId() + "'" +
             ", userId='" + getUserId() + "'" +
             ", bookId='" + getBookId() + "'" +
+            ", status='" + getStatus() + "'" +
             ", rating='" + getRating() + "'" +
             "}";
     }
-
 
 }

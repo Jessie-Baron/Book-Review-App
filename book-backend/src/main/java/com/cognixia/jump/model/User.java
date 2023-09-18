@@ -1,5 +1,8 @@
 package com.cognixia.jump.model;
 
+import java.io.Serializable;
+import java.util.Objects;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -7,10 +10,11 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import java.util.Objects;
 
 @Entity
-public class User {
+public class User implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     public static enum Role {
         ROLE_USER, ROLE_ADMIN
@@ -18,7 +22,7 @@ public class User {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Column
     private String username;
@@ -33,18 +37,22 @@ public class User {
     public User() {
     }
 
-    public User(int id, String username, String password, Role role) {
+    public User(Integer id) {
+        this.id = id;
+    }
+
+    public User(Integer id, String username, String password, Role role) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.role = role;
     }
 
-    public int getId() {
+    public Integer getId() {
         return this.id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -72,7 +80,7 @@ public class User {
         this.role = role;
     }
 
-    public User id(int id) {
+    public User id(Integer id) {
         setId(id);
         return this;
     }
