@@ -50,7 +50,7 @@ public class UserController {
         return ResponseEntity.status(200).body(users);
     } 
     
-    @GetMapping("/users/{id}")
+    @GetMapping("/user/{id}")
     public ResponseEntity<User> getUserById(@PathVariable int id) throws Exception {
 
         Optional<User> foundUser = userRepo.findById(id);
@@ -65,6 +65,8 @@ public class UserController {
     /********************
 		POST OPERATIONS
 	 ********************/
+
+     // Only the user's username and password are necessary for the request body
     @PostMapping("/user/auth")
     public ResponseEntity<User> getUserByCredentials(@RequestBody User user) throws Exception {
         
@@ -95,8 +97,8 @@ public class UserController {
     }
 
     // You only need to inlcude the book title, status, and rating in the request body and the method will create the actual UserBook object with the correct book id before adding it to the database
-    @PostMapping("/user/{userId}")
-    public ResponseEntity<UserBook> addBookToUserList(@PathVariable int userId, @RequestBody UserBookRequestBody userBookRB) throws Exception {
+    @PostMapping("/userbook/{userId}")
+    public ResponseEntity<?> addBookToUserList(@PathVariable int userId, @RequestBody UserBookRequestBody userBookRB) throws Exception {
 
         Optional<UserBook> existingUserBook = userBookRepo.findByUserIdAndBookTitle(userId, userBookRB.getTitle());
 
@@ -116,7 +118,7 @@ public class UserController {
 
         UserBook createdUserBook = userBookRepo.save(newUserBook);
 
-        return ResponseEntity.status(201).body(createdUserBook);
+        return ResponseEntity.status(201).build();
     }
 
     
@@ -147,9 +149,9 @@ public class UserController {
     }
 
 
-    // UserBookRequestBody has 3 variables. Book title, status, and rating. Because this method is just to update the UserBook entry, either status or rating can be left blank in the request body if you don't plan on changing the values for both of those variables
-    @PatchMapping("/user/{userId}/{bookId}")
-    public ResponseEntity<UserBook> updateUserBookEntry(@PathVariable int userId, @PathVariable int bookId, @RequestBody UserBookRequestBody userBookRB) throws Exception {
+    // UserBookRequestBody has 3 variables. Book title, status, and rating. Because this method is just to update the UserBook entry, either status or rating can be excluded from the request body if you don't plan on changing the values for both of those variables
+    @PatchMapping("/userbook/{userId}")
+    public ResponseEntity<?> updateUserBookEntry(@PathVariable int userId, @RequestBody UserBookRequestBody userBookRB) throws Exception {
 
         Optional<User> foundUser = userRepo.findById(userId);
 
@@ -172,7 +174,7 @@ public class UserController {
 
         UserBook updated = userBookRepo.save(existingUserBook);
 
-        return ResponseEntity.status(200).body(updated);
+        return ResponseEntity.status(200).build();
     }
 
     /********************
@@ -194,8 +196,8 @@ public class UserController {
     }
 
     // The only thing you need to include in the request body is the title of the book
-    @DeleteMapping("/user/{userId}")
-    public ResponseEntity<UserBook> removeUserBookEntry(@PathVariable int userId, @PathVariable UserBookRequestBody userBookRB) throws Exception {
+    @DeleteMapping("/userbook/{userId}")
+    public ResponseEntity<?> removeUserBookEntry(@PathVariable int userId, @RequestBody UserBookRequestBody userBookRB) throws Exception {
 
         Optional<UserBook> foundUserBook = userBookRepo.findByUserIdAndBookTitle(userId, userBookRB.getTitle());
 
@@ -205,6 +207,6 @@ public class UserController {
 
         userBookRepo.delete(foundUserBook.get());
 
-        return ResponseEntity.status(200).body(foundUserBook.get());
+        return ResponseEntity.status(200).build();
     }
 }

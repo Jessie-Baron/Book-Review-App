@@ -1,17 +1,23 @@
 package com.cognixia.jump.model;
 
+import java.io.Serializable;
+import java.util.Objects;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import java.util.Objects;
 
 @Entity
-public class UserBook {
+public class UserBook implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     public static enum Status {
         PLAN_TO_READ, CURRENTLY_READING, COMPLETED
@@ -29,7 +35,7 @@ public class UserBook {
     @JoinColumn(name = "book_id", referencedColumnName = "id")
     private Book bookId;
 
-    @Column
+    @Enumerated(EnumType.STRING)
     private Status status;
 
     @Column
