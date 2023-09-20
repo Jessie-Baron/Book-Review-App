@@ -1,8 +1,11 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import ProfileButton from './ProfileButton';
 import './Navigation.css';
+import Books from '../Books/Books';
+import Splash from '../Splash/Splash';
+
 
 function Navigation({ isLoaded }){
 	const sessionUser = useSelector(state => state.session.user);
@@ -23,8 +26,8 @@ function Navigation({ isLoaded }){
 				<h2>Bookish.</h2>
 			</div>
 			<ul className='nav-menu'>
-				<li>Home</li>
-				<li>Books</li>
+			<li><NavLink exact to="/">Home</NavLink></li>
+			<li><NavLink exact to="/books">Books</NavLink></li>
 			</ul>
 
 		</div>

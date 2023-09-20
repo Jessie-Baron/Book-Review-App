@@ -1,0 +1,53 @@
+.container {
+    background-color: rgba(0,0,0,0);
+    background-color: rgba 0, 0. 0. 0.4;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    z-index: 2;
+}
+h1 {
+    padding: 20px;
+}
+
+.popup {
+    height: 500px;
+    width: 500px;
+    background: rosybrown; 
+    border-radius: 30px;
+    position: relative;
+}
+
+.signupinput {
+    margin: 8px auto; 
+    display: block;
+    width: 50%;
+    padding: 5px;
+
+}
+
+.form-btn{
+    width: 5em; 
+    height: 1.5em;
+    padding: 2px; 
+    border: 2px solid white;
+    border-radius: 0.25em;
+    background-color: rgba(255, 255, 255, 0.457);
+    z-index: 1;
+    font-size: 1.5em;
+    display: block;
+    justify-content: center;
+    cursor: pointer;
+    margin: 3rem auto 1rem auto; 
+}
+
+.form-btn:hover {
+    border: 2px solid rgba(255, 255, 255, 0.457);
+    background-color: slategray;
+
+}
