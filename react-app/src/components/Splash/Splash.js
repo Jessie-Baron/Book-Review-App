@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { login } from "../../store/session";
 import { useDispatch, useSelector } from "react-redux";
-import { Redirect } from "react-router-dom";
 import './Splash.css';
 import books from "/Users/maleiyahbranch-davis/Desktop/Book_Rec_Project/Book-Review-App/react-app/src/components/assests/books.jpg"; 
 import Navigation from "../Navigation";
-import {FaSearch} from "react-icons/fa"
+import {FaSearch} from "react-icons/fa"; 
+import LoginFormModal from "../LoginFormModal";
+import SignupFormModal from "../SignupFormModal";
 
 function Splash() {
   const dispatch = useDispatch();
@@ -13,6 +13,20 @@ function Splash() {
   //const [email, setEmail] = useState("");
   //const [password, setPassword] = useState("");
   //const [errors, setErrors] = useState([]);
+  const [loginformmodal,setloginformmodal] = useState(false);
+  const [signupformmodal,setsignupformmodal] = useState(false);
+
+function login() {
+  setloginformmodal(true);
+  setsignupformmodal(false);
+}
+function signup() {
+  setsignupformmodal(true);
+  setloginformmodal(false); 
+}
+
+
+  
 
 
   return (
@@ -34,8 +48,12 @@ function Splash() {
             </div>
         </form>
       </div>
-        <button className="home-btn">Login</button>
-        <button className="home-btn">Register</button>
+        {/* <button className="home-btn"><LoginFormModal onClick={OpenModalButton} show= {false}>Login</LoginFormModal></button> */}
+        {/* <button className="home-btn"><SignupFormModal onClick={OpenModalButton} show= {false}>Register</SignupFormModal></button> */}
+        <button className="home-btn" onClick={login}>Login</button>
+        <button className="home-btn" onClick={signup}>Register</button>
+        {loginformmodal && <LoginFormModal/>} 
+        {signupformmodal&& <SignupFormModal/>}
     </div>  
   );
 }

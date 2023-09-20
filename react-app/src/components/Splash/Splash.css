@@ -65,6 +65,11 @@ p {
     justify-content: center;
     cursor: pointer;
 }
+.home-btn:hover {
+    border: 2px solid rgba(255, 255, 255, 0.457);
+    background-color: slategray;
+
+}
 
 .form {
     display: flex;
@@ -92,5 +97,6 @@ p {
 }
 
 .icon {
-    fill: black;
+    fill: white;
 }
+
